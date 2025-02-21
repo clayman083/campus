@@ -1,0 +1,15 @@
+[workspace]
+resolver = "2"
+members = []
+
+[workspace.package]
+name = "campus"
+description = "Pet projects playground"
+publish = false
+edition = "2024"
+license = "MIT"
+
+[workspace.dependencies]
+#
+# External crates
+#
