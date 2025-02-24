@@ -1,0 +1,34 @@
+---
+name: Passport CI
+
+on:
+  push:
+    paths:
+      - ".github/workflows/base.yml"
+      - ".github/workflows/passport.yml"
+      - "crates/passport/**"
+      - "proto/passport.proto"
+      - "Cargo.lock"
+      - "Cargo.toml"
+  pull_request:
+    paths:
+      - ".github/workflows/base.yml"
+      - ".github/workflows/passport.yml"
+      - "crates/passport/**"
+      - "proto/passport.proto"
+      - "Cargo.lock"
+      - "Cargo.toml"
+  workflow_dispatch: # Allows to trigger the workflow manually in GitHub UI
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  base:
+    uses: ./.github/workflows/base.yml
+    with:
+      package: passport
+      image_name: ${{ env.REGISTRY }}/${{ github.repository }}/passport
+      workdir: crates/passport
+    secrets: inherit
