@@ -28,7 +28,8 @@ jobs:
   base:
     uses: ./.github/workflows/base.yml
     with:
-      package: passport
       image_name: ${{ env.REGISTRY }}/${{ github.repository }}/passport
+      registry: ${{ env.REGISTRY }}
+      package: passport
       workdir: crates/passport
     secrets: inherit
