@@ -57,7 +57,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ inputs.image_name }}/${{ inputs.package }}
+          images: ${{ inputs.registry }}/${{ inputs.image_name }}
           tags: |
             # branch event
             type=ref,event=branch

@@ -20,16 +20,12 @@ on:
       - "Cargo.toml"
   workflow_dispatch: # Allows to trigger the workflow manually in GitHub UI
 
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
-
 jobs:
   base:
     uses: ./.github/workflows/base.yml
     with:
-      image_name: ${{ env.REGISTRY }}/${{ github.repository }}/passport
-      registry: ${{ env.REGISTRY }}
+      image_name: ${{ github.repository }}/passport
+      registry: ghcr.io
       package: passport
       workdir: crates/passport
     secrets: inherit
