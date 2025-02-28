@@ -1,0 +1,29 @@
+---
+name: Passport Web CI
+
+on:
+  push:
+    paths:
+      - ".github/workflows/base.yml"
+      - ".github/workflows/passport.yml"
+      - "crates/passport-web/**"
+      - "Cargo.lock"
+      - "Cargo.toml"
+  pull_request:
+    paths:
+      - ".github/workflows/base.yml"
+      - ".github/workflows/passport.yml"
+      - "crates/passport-web/**"
+      - "Cargo.lock"
+      - "Cargo.toml"
+  workflow_dispatch: # Allows to trigger the workflow manually in GitHub UI
+
+jobs:
+  base:
+    uses: ./.github/workflows/base.yml
+    with:
+      image_name: ${{ github.repository }}/passport-web
+      registry: ghcr.io
+      package: passport-web
+      workdir: crates/passport-web
+    secrets: inherit
