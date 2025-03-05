@@ -3,6 +3,8 @@ name: Passport JWT CI
 
 on:
   push:
+    branches:
+      - master
     paths:
       - ".github/workflows/lib.yml"
       - ".github/workflows/passport-jwt.yml"
@@ -10,6 +12,8 @@ on:
       - "Cargo.lock"
       - "Cargo.toml"
   pull_request:
+    branches:
+      - master
     paths:
       - ".github/workflows/lib.yml"
       - ".github/workflows/passport-jwt.yml"
