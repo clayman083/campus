@@ -1,0 +1,30 @@
+---
+name: Passport JWT CI
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - ".github/workflows/lib.yml"
+      - ".github/workflows/passport-jwt.yml"
+      - "crates/passport-jwt/**"
+      - "Cargo.lock"
+      - "Cargo.toml"
+  pull_request:
+    branches:
+      - master
+    paths:
+      - ".github/workflows/lib.yml"
+      - ".github/workflows/passport-jwt.yml"
+      - "crates/passport-jwt/**"
+      - "Cargo.lock"
+      - "Cargo.toml"
+  workflow_dispatch: # Allows to trigger the workflow manually in GitHub UI
+
+jobs:
+  base:
+    uses: ./.github/workflows/lib.yml
+    with:
+      package: passport-jwt
+    secrets: inherit

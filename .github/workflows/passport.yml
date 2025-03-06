@@ -3,6 +3,8 @@ name: Passport CI
 
 on:
   push:
+    branches:
+      - master
     paths:
       - ".github/workflows/base.yml"
       - ".github/workflows/passport.yml"
@@ -11,6 +13,8 @@ on:
       - "Cargo.lock"
       - "Cargo.toml"
   pull_request:
+    branches:
+      - master
     paths:
       - ".github/workflows/base.yml"
       - ".github/workflows/passport.yml"

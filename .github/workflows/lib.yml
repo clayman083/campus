@@ -1,0 +1,47 @@
+---
+name: Base Rust library CI
+
+on:
+  workflow_call:
+    inputs:
+      package:
+        required: true
+        type: string
+        description: "Package name"
+      install-packages:
+        description: "Space seperated list of packages to install using apt-get."
+        default: ""
+        type: string
+      # To avoid being billed 360 minutes if a step does not terminate
+      # (we've seen the setup-python step below do so!)
+      ci-timeout:
+        description: "The timeout of the ci job. Default is 25min"
+        default: 25
+        type: number
+
+jobs:
+  format:
+    name: Check with rustfmt formatter
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+        with:
+          components: rustfmt
+
+      - name: Rustfmt Check
+        run: cargo fmt --check -p ${{ inputs.package }}
+
+  tests:
+    name: Run tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions-rust-lang/setup-rust-toolchain@v1
+
+      - name: Run tests
+        run: cargo test -p ${{ inputs.package }}
