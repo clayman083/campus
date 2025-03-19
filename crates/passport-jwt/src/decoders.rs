@@ -33,7 +33,7 @@ impl TokenDecoder {
         self.keys.insert(key_id, key);
     }
 
-    pub fn decode(&self, token: &str, issued_for: &str) -> Result<tokens::Token, TokenError> {
+    pub fn decode(&self, token: &str) -> Result<tokens::Token, TokenError> {
         let header = match decode_header(token) {
             Ok(header) => header,
             Err(_) => return Err(TokenError::InvalidToken),
@@ -46,7 +46,7 @@ impl TokenDecoder {
 
         let mut validation = Validation::new(Algorithm::EdDSA);
         validation.leeway = 5;
-        validation.set_audience(&[issued_for.to_string()]);
+        validation.validate_aud = false;
         validation.set_required_spec_claims(&["iss", "sub", "aud", "ext", "iat", "nbf"]);
 
         let decoded = match decode::<tokens::TokenClaims>(&token, &key, &validation) {
@@ -291,7 +291,7 @@ mod tests {
         let mut decoder = TokenDecoder::new();
         decoder.add_key(keypair.2.clone(), keypair.1.clone());
 
-        let result = match decoder.decode(&normal_token, issued_for) {
+        let result = match decoder.decode(&normal_token) {
             Ok(token) => token,
             Err(err) => panic!("Failed to decode token: {:?}", err),
         };
@@ -309,16 +309,16 @@ mod tests {
     }
 
     #[rstest]
-    fn test_decode_failed_wo_key(issued_for: &String, normal_token: String) {
+    fn test_decode_failed_wo_key(normal_token: String) {
         let decoder = TokenDecoder::new();
 
-        let result = decoder.decode(&normal_token, issued_for);
+        let result = decoder.decode(&normal_token);
 
         assert_eq!(result, Err(TokenError::UnknownKey));
     }
 
     #[rstest]
-    fn test_decode_failed_w_wrong_key(issued_for: &String, normal_token: String) {
+    fn test_decode_failed_w_wrong_key(normal_token: String) {
         let doc = Ed25519KeyPair::generate_pkcs8(&ring::rand::SystemRandom::new()).unwrap();
 
         let pair = Ed25519KeyPair::from_pkcs8(doc.as_ref()).unwrap();
@@ -327,7 +327,7 @@ mod tests {
         let mut decoder = TokenDecoder::new();
         decoder.add_key(String::from("passport.0"), decoding_key);
 
-        let result = decoder.decode(&normal_token, issued_for);
+        let result = decoder.decode(&normal_token);
 
         assert_eq!(result, Err(TokenError::WrongKey));
     }
@@ -335,28 +335,24 @@ mod tests {
     #[rstest]
     fn test_decode_failed_w_expired_token(
         keypair: &(EncodingKey, DecodingKey, String),
-        issued_for: &String,
         expired_token: String,
     ) {
         let mut decoder = TokenDecoder::new();
         decoder.add_key(keypair.2.clone(), keypair.1.clone());
 
-        let result = decoder.decode(&expired_token, issued_for);
+        let result = decoder.decode(&expired_token);
 
         assert_eq!(result, Err(TokenError::TokenExpired));
     }
 
     #[rstest]
-    fn test_decode_failed_w_empty_token(
-        keypair: &(EncodingKey, DecodingKey, String),
-        issued_for: &String,
-    ) {
+    fn test_decode_failed_w_empty_token(keypair: &(EncodingKey, DecodingKey, String)) {
         let token = "".to_string();
 
         let mut decoder = TokenDecoder::new();
         decoder.add_key(keypair.2.clone(), keypair.1.clone());
 
-        let result = decoder.decode(&token, &issued_for);
+        let result = decoder.decode(&token);
 
         assert_eq!(result, Err(TokenError::InvalidToken));
     }
@@ -364,13 +360,12 @@ mod tests {
     #[rstest]
     fn test_decode_failed_wo_iss(
         keypair: &(EncodingKey, DecodingKey, String),
-        issued_for: &String,
         token_wo_issuer: String,
     ) {
         let mut decoder = TokenDecoder::new();
         decoder.add_key(keypair.2.clone(), keypair.1.clone());
 
-        match decoder.decode(&token_wo_issuer, &issued_for) {
+        match decoder.decode(&token_wo_issuer) {
             Ok(_) => panic!("Test should fail"),
             Err(err) => match err {
                 TokenError::InvalidJson(msg) => {
@@ -384,13 +379,12 @@ mod tests {
     #[rstest]
     fn test_decode_failed_wo_aud(
         keypair: &(EncodingKey, DecodingKey, String),
-        issued_for: &String,
         token_wo_audience: String,
     ) {
         let mut decoder = TokenDecoder::new();
         decoder.add_key(keypair.2.clone(), keypair.1.clone());
 
-        match decoder.decode(&token_wo_audience, &issued_for) {
+        match decoder.decode(&token_wo_audience) {
             Ok(_) => panic!("Test should fail"),
             Err(err) => match err {
                 TokenError::InvalidJson(msg) => {
@@ -403,13 +397,12 @@ mod tests {
     #[rstest]
     fn test_decode_failed_wo_sub(
         keypair: &(EncodingKey, DecodingKey, String),
-        issued_for: &String,
         token_wo_user: String,
     ) {
         let mut decoder = TokenDecoder::new();
         decoder.add_key(keypair.2.clone(), keypair.1.clone());
 
-        match decoder.decode(&token_wo_user, &issued_for) {
+        match decoder.decode(&token_wo_user) {
             Ok(_) => panic!("Test should fail"),
             Err(err) => match err {
                 TokenError::InvalidJson(msg) => {

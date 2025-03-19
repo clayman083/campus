@@ -1280,8 +1280,6 @@ dependencies = [
  "metrics-exporter-prometheus",
  "prost",
  "prost-types",
- "rand_core 0.9.2",
- "ring",
  "serde",
  "tokio",
  "tokio-stream",
