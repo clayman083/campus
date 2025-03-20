@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-package auth;
+package passport;
 
 service Auth {
   rpc Register(RegisterRequest) returns (RegisterResponse) {}
