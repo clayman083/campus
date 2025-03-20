@@ -19,7 +19,7 @@ RUN cargo chef cook --release --recipe-path recipe.json --zigbuild \
     --target x86_64-unknown-linux-musl --target aarch64-unknown-linux-musl
 COPY . .
 RUN cargo zigbuild -r -p passport-api --target x86_64-unknown-linux-musl --target aarch64-unknown-linux-musl && \
-    mkdir /app/linux && \
+    mkdir /opt/linux && \
     cp target/aarch64-unknown-linux-musl/release/passport /opt/linux/arm64 && \
     cp target/x86_64-unknown-linux-musl/release/passport /opt/linux/amd64
 
