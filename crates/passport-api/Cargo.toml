@@ -1,6 +1,6 @@
 [package]
-name = "passport"
-description = "User authentication and authorization service"
+name = "passport-api"
+description = "User authentication and authorization service API"
 version = "0.1.0"
 
 publish.workspace = true

@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["crates/passport", "crates/passport-jwt", "crates/passport-web"]
+members = ["crates/passport-api", "crates/passport-jwt", "crates/passport-web"]
 
 [workspace.package]
 description = "Pet projects playground"

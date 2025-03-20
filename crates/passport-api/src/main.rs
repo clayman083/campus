@@ -7,8 +7,8 @@ use tracing::Level;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use uuid;
 
-use auth::auth_server::{Auth, AuthServer};
-use auth::{RegisterRequest, RegisterResponse, User};
+use passport::auth_server::{Auth, AuthServer};
+use passport::{RegisterRequest, RegisterResponse, User};
 
 pub mod metrics;
 use crate::metrics::{MetricsMiddlewareLayer, start_metrics_server};
@@ -18,8 +18,8 @@ pub mod proto {
         tonic::include_file_descriptor_set!("passport_descriptor");
 }
 
-pub mod auth {
-    tonic::include_proto!("auth");
+pub mod passport {
+    tonic::include_proto!("passport");
 }
 
 #[derive(Debug)]

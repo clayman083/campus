@@ -7,7 +7,7 @@ WORKDIR /opt/app
 COPY Cargo.toml Cargo.lock ./
 COPY . .
 
-RUN cargo build --release -p passport
+RUN cargo build --release -p passport-api
 
 
 FROM alpine

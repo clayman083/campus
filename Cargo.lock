@@ -1270,7 +1270,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "passport"
+name = "passport-api"
 version = "0.1.0"
 dependencies = [
  "async-stream",
