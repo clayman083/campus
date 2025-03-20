@@ -1,5 +1,5 @@
 ---
-name: Passport CI
+name: Passport API CI
 
 on:
   push:
@@ -7,8 +7,8 @@ on:
       - master
     paths:
       - ".github/workflows/base.yml"
-      - ".github/workflows/passport.yml"
-      - "crates/passport/**"
+      - ".github/workflows/passport-api.yml"
+      - "crates/passport-api/**"
       - "proto/passport.proto"
       - "Cargo.lock"
       - "Cargo.toml"
@@ -17,8 +17,8 @@ on:
       - master
     paths:
       - ".github/workflows/base.yml"
-      - ".github/workflows/passport.yml"
-      - "crates/passport/**"
+      - ".github/workflows/passport-api.yml"
+      - "crates/passport-api/**"
       - "proto/passport.proto"
       - "Cargo.lock"
       - "Cargo.toml"
@@ -28,8 +28,8 @@ jobs:
   base:
     uses: ./.github/workflows/base.yml
     with:
-      image_name: ${{ github.repository }}/passport
+      image_name: ${{ github.repository }}/passport-api
       registry: ghcr.io
-      package: passport
-      workdir: crates/passport
+      package: passport-api
+      workdir: crates/passport-api
     secrets: inherit
