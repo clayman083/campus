@@ -1,4 +1,4 @@
-FROM rust:1.85.0-alpine AS build
+FROM --platform=$BUILDPLATFORM rust:1.85.0-alpine AS build
 
 RUN apk update && apk add --no-cache make protobuf-dev musl-dev
 
