@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - master
+    tags:
+      - "passport-api-v*"
     paths:
       - ".github/workflows/base.yml"
       - ".github/workflows/passport-api.yml"

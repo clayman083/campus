@@ -59,6 +59,8 @@ jobs:
         with:
           images: ${{ inputs.registry }}/${{ inputs.image_name }}
           tags: |
+            # match tag
+            type=match,pattern=\d.\d.\d
             # branch event
             type=ref,event=branch
             # tag event
