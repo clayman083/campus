@@ -15,7 +15,7 @@ FROM chef AS builder
 
 RUN apk update && apk add --no-cache make protobuf-dev musl-dev
 COPY --from=planner /opt/app/recipe.json recipe.json
-RUN cargo chef cook --release --recipe-path recipe.json --zigbuild \
+RUN cargo chef cook --release -p passport-api --recipe-path recipe.json --zigbuild \
     --target x86_64-unknown-linux-musl --target aarch64-unknown-linux-musl
 COPY . .
 RUN cargo zigbuild -r -p passport-api --target x86_64-unknown-linux-musl --target aarch64-unknown-linux-musl && \
