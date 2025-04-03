@@ -1383,11 +1383,11 @@ dependencies = [
  "metrics-exporter-prometheus",
  "prost",
  "prost-types",
+ "protocols",
  "serde",
  "tokio",
  "tokio-stream",
  "tonic",
- "tonic-build",
  "tonic-reflection",
  "tower 0.5.2",
  "tower-http",
@@ -1403,10 +1403,10 @@ dependencies = [
  "clap",
  "prost",
  "prost-types",
+ "protocols",
  "tokio",
  "tokio-stream",
  "tonic",
- "tonic-build",
  "tonic-reflection",
  "tracing",
  "tracing-subscriber",
@@ -1669,6 +1669,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "52c2c1bf36ddb1a1c396b3601a3cec27c2462e45f07c386894ec3ccf5332bd16"
 dependencies = [
  "prost",
+]
+
+[[package]]
+name = "protocols"
+version = "0.1.0"
+dependencies = [
+ "prost",
+ "prost-types",
+ "tonic",
+ "tonic-build",
 ]
 
 [[package]]

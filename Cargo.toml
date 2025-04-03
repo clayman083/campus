@@ -5,6 +5,7 @@ members = [
     "crates/passport-ctl",
     "crates/passport-jwt",
     "crates/passport-web",
+    "crates/protocols",
 ]
 
 [workspace.package]
@@ -55,3 +56,7 @@ rstest = "0.25.0"
 
 # Build dependencies
 tonic-build = "0.12.3"
+
+# Local dependencies
+passport-jwt = { path = "crates/passport-jwt" }
+protocols = { path = "crates/protocols" }

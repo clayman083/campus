@@ -7,20 +7,11 @@ use tracing::Level;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use uuid;
 
-use passport::auth_server::{Auth, AuthServer};
-use passport::{RegisterRequest, RegisterResponse, User};
+use protocols::passport::auth_server::{Auth, AuthServer};
+use protocols::passport::{RegisterRequest, RegisterResponse, User};
 
 pub mod metrics;
 use crate::metrics::{MetricsMiddlewareLayer, start_metrics_server};
-
-pub mod proto {
-    pub(crate) const FILE_DESCRIPTOR_SET: &[u8] =
-        tonic::include_file_descriptor_set!("passport_descriptor");
-}
-
-pub mod passport {
-    tonic::include_proto!("passport");
-}
 
 #[derive(Debug)]
 pub struct AuthService {}
@@ -62,7 +53,7 @@ async fn start_grpc_server(addr: String, debug: bool) {
 
     if debug {
         let reflection_service = tonic_reflection::server::Builder::configure()
-            .register_encoded_file_descriptor_set(proto::FILE_DESCRIPTOR_SET)
+            .register_encoded_file_descriptor_set(protocols::passport_proto::FILE_DESCRIPTOR_SET)
             .build_v1()
             .unwrap();
 

@@ -2,12 +2,8 @@ use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 use clap::{Parser, Subcommand, builder::BoolishValueParser};
 
-use passport::RegisterRequest;
-use passport::auth_client::AuthClient;
-
-pub mod passport {
-    tonic::include_proto!("passport");
-}
+use protocols::passport::RegisterRequest;
+use protocols::passport::auth_client::AuthClient;
 
 #[derive(Debug, Parser)]
 #[command(name = "passport")]
