@@ -1,6 +1,12 @@
 [workspace]
 resolver = "2"
-members = ["crates/passport-api", "crates/passport-jwt", "crates/passport-web"]
+members = [
+    "crates/passport-api",
+    "crates/passport-ctl",
+    "crates/passport-jwt",
+    "crates/passport-web",
+    "crates/protocols",
+]
 
 [workspace.package]
 description = "Pet projects playground"
@@ -9,9 +15,48 @@ edition = "2024"
 license = "MIT"
 
 [workspace.dependencies]
+# External dependencies
+clap = { version = "4.5.32", features = ["derive", "env"] }
+
+tokio = { version = "1.44.1", features = ["full"] }
+tokio-stream = "0.1.17"
+
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = [
+    "env-filter",
+    "json",
+    "serde_json",
+] }
+
+axum = "0.8.1"
+http = "1.2.0"
+
+metrics = { version = "0.24.1", default-features = false }
+metrics-exporter-prometheus = { version = "0.16.2", default-features = false }
+
+tower = "0.5.2"
+tower-http = { version = "0.6.2", features = ["trace"] }
+
+tonic = "0.12.3"
+tonic-reflection = "0.12.3"
+prost = "0.13.5"
+prost-types = "0.13.5"
+
 chrono = { version = "0.4.40", features = ["serde"] }
+jsonwebtoken = "9.3.1"
 rand = { version = "0.9.0", features = ["serde"] }
 serde = { version = "1.0.218", features = ["derive"] }
 uuid = { version = "1.15.1", features = ["v4"] }
+
+# Dev dependencies
+pem = "3.0.5"
+rsa = { version = "0.9.7", features = ["pem"] }
 ring = "0.17.11"
 rstest = "0.25.0"
+
+# Build dependencies
+tonic-build = "0.12.3"
+
+# Local dependencies
+passport-jwt = { path = "crates/passport-jwt" }
+protocols = { path = "crates/protocols" }

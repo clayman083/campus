@@ -1,0 +1,27 @@
+[package]
+name = "passport-ctl"
+version = "0.2.0"
+description.workspace = true
+publish.workspace = true
+edition.workspace = true
+license.workspace = true
+
+[dependencies]
+clap = { workspace = true, features = ["derive", "env"] }
+
+tokio = { workspace = true, features = ["full"] }
+tokio-stream.workspace = true
+
+tracing.workspace = true
+tracing-subscriber = { workspace = true, features = [
+    "env-filter",
+    "json",
+    "serde_json",
+] }
+
+tonic.workspace = true
+tonic-reflection.workspace = true
+prost.workspace = true
+prost-types.workspace = true
+
+protocols.workspace = true
