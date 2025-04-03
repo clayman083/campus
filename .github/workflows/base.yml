@@ -59,12 +59,10 @@ jobs:
         with:
           images: ${{ inputs.registry }}/${{ inputs.image_name }}
           tags: |
-            # match tag
+            # tag event
             type=match,pattern=\d.\d.\d
             # branch event
             type=ref,event=branch
-            # tag event
-            type=ref,event=tag
             # master event
             type=sha,format=short,prefix=,suffix=,enable=${{ github.ref == format('refs/heads/{0}', 'master') }}
 
