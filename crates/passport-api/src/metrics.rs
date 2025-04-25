@@ -42,7 +42,7 @@ where
         self.inner.poll_ready(cx)
     }
 
-    fn call(&mut self, req: http::Request<ReqBody>) -> Self::Future {
+    fn call(&mut self, mut req: http::Request<ReqBody>) -> Self::Future {
         // See: https://docs.rs/tower/latest/tower/trait.Service.html#be-careful-when-cloning-inner-services
         let clone = self.inner.clone();
         let mut inner = std::mem::replace(&mut self.inner, clone);
@@ -55,11 +55,16 @@ where
                 req.uri().path().to_owned()
             };
 
+            req.extensions_mut().insert(path.clone());
+
             // Do extra async work here...
             let response = inner.call(req).await?;
 
             if path.contains("grpc.reflection.v1.ServerReflection").not() {
-                let labels = [("method", path)];
+                let labels = [
+                    ("method", path),
+                    ("status", response.status().as_str().to_string()),
+                ];
 
                 metrics::counter!("grpc_requests_total", &labels).increment(1);
                 metrics::histogram!("grpc_requests_duration_seconds", &labels)

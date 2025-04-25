@@ -1,8 +1,10 @@
+use tonic::Status;
+use tonic_types::StatusExt;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
 use clap::{Parser, Subcommand, builder::BoolishValueParser};
 
-use protocols::passport::RegisterRequest;
+use protocols::passport;
 use protocols::passport::auth_client::AuthClient;
 
 #[derive(Debug, Parser)]
@@ -49,6 +51,8 @@ enum Commands {
         password: String,
     },
 
+    Profile {},
+
     Tokens {
         #[command(subcommand)]
         command: Tokens,
@@ -92,7 +96,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         Commands::Register { username, password } => {
             let mut client = AuthClient::connect("http://127.0.0.1:5000").await?;
 
-            let request = tonic::Request::new(RegisterRequest { username, password });
+            let request = tonic::Request::new(passport::RegisterRequest { username, password });
 
             let response = client.register(request).await?;
             let user = response.into_inner();
@@ -102,6 +106,33 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
         Commands::Login { username, password } => {
             return Err("Not implemented".into());
+        }
+
+        Commands::Profile {} => {
+            let mut client = AuthClient::connect("http://127.0.0.1:5000").await?;
+
+            let request = passport::Empty::default();
+
+            let response = client.get_profile(request).await;
+
+            match response {
+                Ok(user) => {
+                    tracing::info!("User profile: {:?}", user.into_inner());
+                }
+                Err(status) => {
+                    match status.code() {
+                        tonic::Code::Unauthenticated => {
+                            let err_details = status.get_error_details();
+                            tracing::error!("Unauthenticated, {:?}", err_details);
+                        }
+                        _ => {
+                            tracing::error!("Unknown error");
+                        }
+                    }
+
+                    return Ok(());
+                }
+            }
         }
 
         Commands::Tokens { command } => match command {

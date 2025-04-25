@@ -1,21 +1,58 @@
+/*
+ * Copyright (c) 2025 Kirill Sumorokov
+ */
 syntax = "proto3";
 
 package passport;
 
 service Auth {
+  // Register a new user
   rpc Register(RegisterRequest) returns (RegisterResponse) {}
+
+  // Login a user
+  rpc Login(LoginRequest) returns (TokenResponse) {}
+
+  // Refresh a user's access token
+  rpc Refresh(Empty) returns (TokenResponse) {}
+
+  // Get a user's profile
+  rpc GetProfile(Empty) returns (User) {}
 }
 
+message Empty {}
+
+// Get a user's profile
 message User {
+  // User's ID
   string id = 1;
+  // User's username
   string username = 2;
 }
 
+// Register a new user
 message RegisterRequest {
+  // User's username
   string username = 1;
+  // User's password
   string password = 2;
 }
 
+// New user has been registered
 message RegisterResponse {
   User user = 1;
+}
+
+// Login a user
+message LoginRequest {
+  // User's username
+  string username = 1;
+  // User's password
+  string password = 2;
+}
+
+message TokenResponse {
+  // User's access token
+  string access_token = 1;
+  // User's refresh token
+  string refresh_token = 2;
 }

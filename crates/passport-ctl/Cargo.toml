@@ -20,6 +20,7 @@ tracing-subscriber = { workspace = true, features = [
 ] }
 
 tonic.workspace = true
+tonic-types.workspace = true
 tonic-reflection.workspace = true
 prost.workspace = true
 prost-types.workspace = true

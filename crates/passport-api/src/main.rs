@@ -1,4 +1,5 @@
 use tonic;
+use tonic::service::InterceptorLayer;
 use tonic::transport::Server;
 use tonic_reflection;
 use tower::ServiceBuilder;
@@ -7,8 +8,11 @@ use tracing::Level;
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 use uuid;
 
+use protocols::passport;
 use protocols::passport::auth_server::{Auth, AuthServer};
-use protocols::passport::{RegisterRequest, RegisterResponse, User};
+
+mod auth;
+use crate::auth::AuthInterceptor;
 
 pub mod metrics;
 use crate::metrics::{MetricsMiddlewareLayer, start_metrics_server};
@@ -20,17 +24,38 @@ pub struct AuthService {}
 impl Auth for AuthService {
     async fn register(
         &self,
-        request: tonic::Request<RegisterRequest>,
-    ) -> Result<tonic::Response<RegisterResponse>, tonic::Status> {
+        request: tonic::Request<passport::RegisterRequest>,
+    ) -> Result<tonic::Response<passport::RegisterResponse>, tonic::Status> {
         let user_id = uuid::Uuid::new_v4();
-        let user = User {
+        let user = passport::User {
             id: user_id.to_string(),
             username: request.into_inner().username,
         };
 
-        let response = RegisterResponse { user: Some(user) };
+        let response = passport::RegisterResponse { user: Some(user) };
 
         Ok(tonic::Response::new(response))
+    }
+
+    async fn login(
+        &self,
+        _: tonic::Request<passport::LoginRequest>,
+    ) -> Result<tonic::Response<passport::TokenResponse>, tonic::Status> {
+        Err(tonic::Status::unimplemented("Not implemented"))
+    }
+
+    async fn refresh(
+        &self,
+        _: tonic::Request<passport::Empty>,
+    ) -> Result<tonic::Response<passport::TokenResponse>, tonic::Status> {
+        Err(tonic::Status::unimplemented("Not implemented"))
+    }
+
+    async fn get_profile(
+        &self,
+        _: tonic::Request<passport::Empty>,
+    ) -> Result<tonic::Response<passport::User>, tonic::Status> {
+        Err(tonic::Status::unimplemented("Not implemented"))
     }
 }
 
@@ -38,6 +63,7 @@ async fn start_grpc_server(addr: String, debug: bool) {
     tracing::info!("gRPC server is listening on {}", addr);
 
     let auth_service = AuthService {};
+    let auth_interceptor = AuthInterceptor {};
     let svc = AuthServer::new(auth_service);
 
     let layer = ServiceBuilder::new()
@@ -49,7 +75,10 @@ async fn start_grpc_server(addr: String, debug: bool) {
         .layer(MetricsMiddlewareLayer {})
         .into_inner();
 
-    let mut server = Server::builder().layer(layer).add_service(svc);
+    let mut server = Server::builder()
+        .layer(layer)
+        .layer(InterceptorLayer::new(auth_interceptor))
+        .add_service(svc);
 
     if debug {
         let reflection_service = tonic_reflection::server::Builder::configure()
